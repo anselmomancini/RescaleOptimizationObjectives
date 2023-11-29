@@ -27,6 +27,14 @@ namespace RescaleOptimizationObjectives
         {
             InitializeComponent();
             _planSetup = planSetup;
+            LoadCurrentDoseFractionation();
+        }
+
+        private void LoadCurrentDoseFractionation()
+        {
+            currentDosePerFractionTextBlock.Text = _planSetup.DosePerFraction.ValueAsString;
+            currentNumberOfFractionsTextBlock.Text = _planSetup.NumberOfFractions.ToString();
+            currentTotalDoseTextBlock.Text = _planSetup.TotalDose.ValueAsString;
         }
     }
 }
