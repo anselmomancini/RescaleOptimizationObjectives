@@ -66,5 +66,27 @@ namespace RescaleOptimizationObjectives
                 mainStackPanel.Children.Add(stackPanel);
             }
         }
+
+        private void newFractionationTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // validação básica para permitir que o usuário preencha os 2 campos, caso contrário, haverá crash
+            if (uint.TryParse(newDosePerFractionTextBox.Text, out var newDosePerFraction) && uint.TryParse(newNumberOfFractionsTextBox.Text, out var newNumberOfFractions))
+            {
+                newTotalDoseTextBlock.Text = (newDosePerFraction * newNumberOfFractions).ToString();
+
+                double globalFactor = double.Parse(newTotalDoseTextBlock.Text) / double.Parse(currentTotalDoseTextBlock.Text);
+
+                // preenche cada estrutura com o valor global
+                foreach (StackPanel stack in mainStackPanel.Children)
+                {
+                    foreach (TextBox textBox in stack.Children.OfType<TextBox>())
+                        textBox.Text = globalFactor.ToString("F2");
+                }
+
+                startButton.IsEnabled = true;
+            }
+            else
+                startButton.IsEnabled = false;
+        }
     }
 }

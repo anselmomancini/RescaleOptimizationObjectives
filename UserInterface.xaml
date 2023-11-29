@@ -49,8 +49,10 @@
                 <TextBlock Text="Dose por fração (cGy): "/>
                 <TextBlock Text="Número de frações: " Grid.Row="1" />
                 <TextBlock Text="Dose total (cGy): " Grid.Row="2"/>
-                <TextBox Grid.Column="1" Margin="0,0,0,5" x:Name="newDosePerFractionTextBox"/>
-                <TextBox Grid.Column="1" Grid.Row="1" Margin="0,0,0,5" x:Name="newNumberOfFractionsTextBox"/>
+                <TextBox Grid.Column="1" Margin="0,0,0,5" x:Name="newDosePerFractionTextBox" 
+                         TextChanged="newFractionationTextBox_TextChanged"/>
+                <TextBox Grid.Column="1" Grid.Row="1" Margin="0,0,0,5" x:Name="newNumberOfFractionsTextBox"
+                         TextChanged="newFractionationTextBox_TextChanged"/>
                 <TextBlock Grid.Column="1" Grid.Row="2" x:Name="newTotalDoseTextBlock"/>
             </Grid>
         </GroupBox>
@@ -60,6 +62,6 @@
             </ScrollViewer>
         </GroupBox>
         <Button Content="Iniciar" Grid.Row="2" Grid.ColumnSpan="2" Height="25" Width="100"
-                x:Name="startButton"/>
+                x:Name="startButton" IsEnabled="False"/>
     </Grid>
 </UserControl>
