@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VMS.TPS.Common.Model.API;
+using VMS.TPS.Common.Model.Types;
 
 namespace RescaleOptimizationObjectives
 {
@@ -22,11 +23,13 @@ namespace RescaleOptimizationObjectives
     public partial class UserInterface : UserControl
     {
         private PlanSetup _planSetup;
+        private Window _window;
 
-        public UserInterface(PlanSetup planSetup)
+        public UserInterface(PlanSetup planSetup, Window window)
         {
             InitializeComponent();
             _planSetup = planSetup;
+            _window = window;
             LoadCurrentDoseFractionation();
             LoadStructuresWithOptimizationObjective();
         }
@@ -87,6 +90,47 @@ namespace RescaleOptimizationObjectives
             }
             else
                 startButton.IsEnabled = false;
+        }
+
+        private void startButton_Click(object sender, RoutedEventArgs e)
+        {
+            // adiciona o novo planejamento
+            var newPlanSetup = _planSetup.Course.CopyPlanSetup(_planSetup);
+
+            foreach (StackPanel stackPanel in mainStackPanel.Children)
+            {
+                var structureId = stackPanel.Children.OfType<TextBlock>().Single().Text;
+                var specificFactor = double.Parse(stackPanel.Children.OfType<TextBox>().Single().Text);
+
+                var objectivesPerStructure = newPlanSetup.OptimizationSetup.Objectives.Where(x => x.StructureId == structureId);
+
+                foreach (var objective in objectivesPerStructure.OfType<OptimizationPointObjective>())
+                {
+                    var newDoseValue = specificFactor * objective.Dose;
+
+                    newPlanSetup.OptimizationSetup.AddPointObjective(objective.Structure, objective.Operator, newDoseValue,
+                                                                     objective.Volume, objective.Priority);
+
+                    newPlanSetup.OptimizationSetup.RemoveObjective(objective);
+                }
+
+                foreach (var objective in objectivesPerStructure.OfType<OptimizationMeanDoseObjective>())
+                {
+                    var newDoseValue = specificFactor * objective.Dose;
+
+                    newPlanSetup.OptimizationSetup.AddMeanDoseObjective(objective.Structure, newDoseValue, objective.Priority);
+
+                    newPlanSetup.OptimizationSetup.RemoveObjective(objective);
+                }
+            }
+
+            newPlanSetup.SetPrescription(int.Parse(newNumberOfFractionsTextBox.Text),
+                                         new DoseValue(double.Parse(newDosePerFractionTextBox.Text),
+                                         DoseValue.DoseUnit.cGy), _planSetup.TreatmentPercentage); //a unidade de dose (Gy ou cGy) deve ser a mesma da definida em Data Administration/System Configuration
+
+            MessageBox.Show("Processo finalizado.");
+
+            _window.Close();
         }
     }
 }

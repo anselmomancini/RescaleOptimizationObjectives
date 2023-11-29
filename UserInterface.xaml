@@ -62,6 +62,6 @@
             </ScrollViewer>
         </GroupBox>
         <Button Content="Iniciar" Grid.Row="2" Grid.ColumnSpan="2" Height="25" Width="100"
-                x:Name="startButton" IsEnabled="False"/>
+                x:Name="startButton" IsEnabled="False" Click="startButton_Click"/>
     </Grid>
 </UserControl>

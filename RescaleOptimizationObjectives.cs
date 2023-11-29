@@ -32,9 +32,12 @@ namespace VMS.TPS
 
             PlanSetup planSetup = context.PlanSetup;
 
+            if (planSetup == null || planSetup.NumberOfFractions == null || string.IsNullOrEmpty(planSetup.DosePerFraction.ValueAsString))
+                throw new ApplicationException("Carregue um planejamento válido antes de executar o script.");
+
             context.Patient.BeginModifications();
 
-            var userInterface = new UserInterface(planSetup);
+            var userInterface = new UserInterface(planSetup, window);
 
             window.Width = 450;
             window.Height = 350;
